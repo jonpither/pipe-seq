@@ -1,4 +1,4 @@
-(defproject pipe-seq "0.1.0"
+(defproject pipe-seq "0.1.0-SNAPSHOT"
   :description "pmap styled pipes"
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
