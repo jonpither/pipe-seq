@@ -1,4 +1,6 @@
-(ns pipe-seq.core)
+(ns pipe-seq.core
+  (:require [clojure.stacktrace :as st]
+            [clojure.tools.logging :as log]))
 
 (defn pipe
   "Returns a vector containing a sequence that will read from the
@@ -43,6 +45,11 @@
                        (when-not (and (zero? (.size q))
                                       (realized? finished-feeding))
                          (recur))))
+                   (catch Exception e
+                     (let [writer (java.io.StringWriter.)]
+                       (binding [*out* writer]
+                         (st/print-stack-trace e)
+                         (log/error (str writer)))))
                    (finally
                      (.countDown latch)))))
 
