@@ -1,5 +1,7 @@
 # pipe-seq
 
+Extremely simple parallelism, giving you more control that Clojures pmap.
+
 See http://www.pitheringabout.com/?p=874
 
 ## Usage
@@ -11,7 +13,7 @@ See http://www.pitheringabout.com/?p=874
 
 ## Install
 
-:dependencies [[pipe-seq "0.1.0"]]
+:dependencies [[pipe-seq "0.1.1"]]
 
 ## License
 
