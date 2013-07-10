@@ -11,9 +11,9 @@ See http://www.pitheringabout.com/?p=874
       (pipe-seq some-fn 10 1)
       doall)`
 
-feed the pipe in a nonblocking manner with a limited queue size:
+feed the pipe in a non blocking manner with a limited queue size:
 
-`(let [[s f] (pipe :size 5 :feed-non-blocking 1)] (dotimes [n 10] (f n)) (doseq [x s] (println x)))
+`(let [[s f] (pipe :size 5 :feed-non-blocking 1)] (dotimes [n 10] (f n)) (doseq [x s] (println x)))`
 
 ## Install
 
