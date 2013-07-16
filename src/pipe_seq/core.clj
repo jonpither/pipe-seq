@@ -2,31 +2,44 @@
   (:require [clojure.stacktrace :as st]
             [clojure.tools.logging :as log]))
 
+(def NIL (Object.))
+(def EOQ (Object.))
+
 (defn pipe
   "Returns a vector containing a sequence that will read from the
    queue, and a function that inserts items into the queue.
 
-   If whatever value provided by the key :feed-non-blocking queue will be fed in a
-   non blocking manner using offer insteat of put.
+   The initial size of the queue and the function for feeding should be provided as parameters.
    Copyright Christophe Grand
    See http://clj-me.cgrand.net/2010/04/02/pipe-dreams-are-not-necessarily-made-of-promises/"
-  [& {:keys [size feed-non-blocking] :as args}]
-  (let [size (:size args)
-        fnb (contains?  args :feed-non-blocking)
-        q (if size
+  [size feed-fn]
+  (let [q (if size
             (java.util.concurrent.LinkedBlockingQueue. size)
             (java.util.concurrent.LinkedBlockingQueue.))
-        EOQ (Object.)
-        NIL (Object.)
-        feed-fn (if fnb
-                  (fn [x] (if-not (.offer q (or x NIL))
-                            (log/warn x " was rejected")))
-                  (fn [x] (.put q (or x NIL))))
         s (fn s [] (lazy-seq (let [x (.take q)]
                                (when-not (= EOQ x)
                                  (cons (when-not (= NIL x) x) (s))))))]
     [(s) (fn ([] (.put q EOQ))
-           ([x] (feed-fn x)))]))
+           ([x] (feed-fn q x)))]))
+
+(defn nonblocking-feed-pipe
+  "Returns a vector containing a sequence that will read from the
+   queue, and a function that inserts items into the queue.
+
+   A variation of the feeder function is provided which feeds the queue
+   in a non blocking manner."
+  [size]
+  (pipe size (fn [q x] (if-not (.offer q (or x NIL))
+                       (log/warn x " was rejected")))))
+
+(defn blocking-feed-pipe
+  "Returns a vector containing a sequence that will read from the
+   queue, and a function that inserts items into the queue.
+
+   A variation of the feeder function is provided which feeds the queue
+   in a blocking manner."
+  [size]
+  (pipe size (fn [q x] (.put q (or x NIL)))))
 
 (defn pipe-seq
   "See http://www.pitheringabout.com/?p=874
@@ -39,7 +52,7 @@
   (let [q (java.util.concurrent.LinkedBlockingQueue. pipe-size)
         finished-feeding (promise)
         latch (java.util.concurrent.CountDownLatch. n-threads)
-        [out-seq out-queue] (pipe :size pipe-size)]
+        [out-seq out-queue] (blocking-feed-pipe pipe-size)]
 
     ;; Feeder thread
     (future
