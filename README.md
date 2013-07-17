@@ -1,6 +1,6 @@
 # pipe-seq
 
-Extremely simple parallelism, giving you more control that Clojures pmap.
+Extremely simple parallelism, giving you more control than Clojures pmap.
 
 See http://www.pitheringabout.com/?p=874
 
