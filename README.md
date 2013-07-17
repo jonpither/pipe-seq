@@ -12,7 +12,7 @@ See http://www.pitheringabout.com/?p=874
       (pipe-seq (fn [x] (Thread/sleep 1000) x) 10 1)
       doall))`
       
-Above takes ten seconds.
+Above takes ten seconds using ten threads with a queue size of one.
 
 feed the pipe in a non blocking manner with a limited queue size:
 
