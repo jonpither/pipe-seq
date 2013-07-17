@@ -6,10 +6,13 @@ See http://www.pitheringabout.com/?p=874
 
 ## Usage
 
-`(->> (iterate inc 0)
+`(time 
+  (->> (iterate inc 0)
       (take 100)
-      (pipe-seq some-fn 10 1)
-      doall)`
+      (pipe-seq (fn [x] (Thread/sleep 1000) x) 10 1)
+      doall))`
+      
+Above takes ten seconds.
 
 feed the pipe in a non blocking manner with a limited queue size:
 
