@@ -14,13 +14,13 @@ See http://www.pitheringabout.com/?p=874
       
 Above takes ten seconds using ten threads with a blocking queue size of one.
 
-feed the pipe in a non blocking manner with a limited queue size:
+Feed the pipe in a non blocking manner with a limited queue size:
 
 `(let [[s f] (nonblocking-feed-pipe 5)] (dotimes [n 10] (f n)) (doseq [x s] (println x)))`
 
-## Install
+## Dependency
 
-:dependencies [[pipe-seq "0.3.0"]]
+`[pipe-seq "0.3.0"]`
 
 ## License
 
