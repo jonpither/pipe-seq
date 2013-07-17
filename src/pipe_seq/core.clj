@@ -9,18 +9,22 @@
   "Returns a vector containing a sequence that will read from the
    queue, and a function that inserts items into the queue.
 
+   The default behavour is to block when feeding if the pipe is full.
+
    The initial size of the queue and the function for feeding should be provided as parameters.
    Copyright Christophe Grand
    See http://clj-me.cgrand.net/2010/04/02/pipe-dreams-are-not-necessarily-made-of-promises/"
-  [size feed-fn]
-  (let [q (if size
-            (java.util.concurrent.LinkedBlockingQueue. size)
-            (java.util.concurrent.LinkedBlockingQueue.))
-        s (fn s [] (lazy-seq (let [x (.take q)]
-                               (when-not (= EOQ x)
-                                 (cons (when-not (= NIL x) x) (s))))))]
-    [(s) (fn ([] (.put q EOQ))
-           ([x] (feed-fn q x)))]))
+  ([size]
+     (pipe size (fn [q x] (.put q (or x NIL)))))
+  ([size feed-fn]
+     (let [q (if size
+               (java.util.concurrent.LinkedBlockingQueue. size)
+               (java.util.concurrent.LinkedBlockingQueue.))
+           s (fn s [] (lazy-seq (let [x (.take q)]
+                                  (when-not (= EOQ x)
+                                    (cons (when-not (= NIL x) x) (s))))))]
+       [(s) (fn ([] (.put q EOQ))
+              ([x] (feed-fn q x)))])))
 
 (defn nonblocking-feed-pipe
   "Returns a vector containing a sequence that will read from the
@@ -31,15 +35,6 @@
   [size]
   (pipe size (fn [q x] (if-not (.offer q (or x NIL))
                        (log/warn x " was rejected")))))
-
-(defn blocking-feed-pipe
-  "Returns a vector containing a sequence that will read from the
-   queue, and a function that inserts items into the queue.
-
-   A variation of the feeder function is provided which feeds the queue
-   in a blocking manner."
-  [size]
-  (pipe size (fn [q x] (.put q (or x NIL)))))
 
 (defn pipe-seq
   "See http://www.pitheringabout.com/?p=874
@@ -52,7 +47,7 @@
   (let [q (java.util.concurrent.LinkedBlockingQueue. pipe-size)
         finished-feeding (promise)
         latch (java.util.concurrent.CountDownLatch. n-threads)
-        [out-seq out-queue] (blocking-feed-pipe pipe-size)]
+        [out-seq out-queue] (pipe pipe-size)]
 
     ;; Feeder thread
     (future

@@ -6,12 +6,12 @@ See http://www.pitheringabout.com/?p=874
 
 ## Usage
 
-`(time 
+`(time
   (->> (iterate inc 0)
       (take 100)
       (pipe-seq (fn [x] (Thread/sleep 1000) x) 10 1)
       doall))`
-      
+
 Above takes ten seconds using ten threads with a blocking queue size of one.
 
 Feed the pipe in a non blocking manner with a limited queue size:
@@ -20,7 +20,7 @@ Feed the pipe in a non blocking manner with a limited queue size:
 
 ## Dependency
 
-`[pipe-seq "0.3.0"]`
+`[pipe-seq "0.3.1"]`
 
 ## License
 
