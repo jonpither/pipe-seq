@@ -1,4 +1,4 @@
-(defproject pipe-seq "0.3.1"
+(defproject pipe-seq "0.3.2"
   :description "pmap styled pipes"
   :url "https://github.com/jonpither/pipe-seq"
   :license {:name "Eclipse Public License"

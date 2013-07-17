@@ -16,11 +16,11 @@ Above takes ten seconds using ten threads with a blocking queue size of one.
 
 Feed the pipe in a non blocking manner with a limited queue size:
 
-`(let [[s f] (nonblocking-feed-pipe 5)] (dotimes [n 10] (f n)) (doseq [x s] (println x)))`
+`(let [[s f] (nonblocking-pipe 5)] (dotimes [n 10] (f n)) (doseq [x s] (println x)))`
 
 ## Dependency
 
-`[pipe-seq "0.3.1"]`
+`[pipe-seq "0.3.2"]`
 
 ## License
 

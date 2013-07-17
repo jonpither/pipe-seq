@@ -26,7 +26,7 @@
        [(s) (fn ([] (.put q EOQ))
               ([x] (feed-fn q x)))])))
 
-(defn nonblocking-feed-pipe
+(defn nonblocking-pipe
   "Returns a vector containing a sequence that will read from the
    queue, and a function that inserts items into the queue.
 
