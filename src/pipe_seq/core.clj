@@ -62,11 +62,8 @@
                        (when-not (and (zero? (.size q))
                                       (realized? finished-feeding))
                          (recur))))
-                   (catch Exception e
-                     (let [writer (java.io.StringWriter.)]
-                       (binding [*out* writer]
-                         (st/print-stack-trace e)
-                         (log/error (str writer)))))
+                   (catch Throwable t
+                     (log/error t))
                    (finally
                      (.countDown latch)))))
 
