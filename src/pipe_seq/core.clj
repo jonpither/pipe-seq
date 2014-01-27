@@ -63,7 +63,7 @@
                                       (realized? finished-feeding))
                          (recur))))
                    (catch Throwable t
-                     (log/error t))
+                     (log/error t "Error occuring during processing."))
                    (finally
                      (.countDown latch)))))
 
